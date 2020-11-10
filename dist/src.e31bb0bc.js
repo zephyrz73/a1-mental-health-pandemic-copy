@@ -29043,6 +29043,18 @@ module.exports = "/state_time_phase.f9479509.csv";
 },{}],"../static/state_name.csv":[function(require,module,exports) {
 module.exports = "/state_name.06503881.csv";
 },{}],"index.js":[function(require,module,exports) {
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 var d3 = require('d3');
 
 var mentalHealthData = require('../static/state_time_phase.csv');
@@ -29079,51 +29091,51 @@ var stateName = require('../static/state_name.csv');
     var svg = d3.select("body").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     console.log(2);
     d3.csv(stateName).then(function (data) {
-      console.log(data);
       data.forEach(function (d) {
         stateNameList.push(d.State);
       });
-    }); // Get the data
+    });
+    /**
+     * Get The data
+     */
 
     d3.csv(mentalHealthData).then(function (data) {
-      data = data.filter(function (d) {
-        return d.State == state;
-      });
       data.forEach(function (d) {
         d.time_label = d["Time Period Label"];
         d.value = +d.Value;
         timeLabelGraph.push(d.time_label);
-      });
-      console.log(3); // Scale the range of the data
+      }); // Scale the range of the data
 
       x.domain(timeLabelGraph);
       y.domain([0, d3.max(data, function (d) {
         return d.value;
-      })]); // // Add the valueline path.
-      // svg.append("path")
-      //     .data([data])
-      //     .attr("class", "line")
-      //     .attr("d", valueline);
-      // console.log(4)
-      // Add the X Axis
-
-      svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("front-size", "14px").style("text-anchor", "start").attr("transform", "rotate(15 -10 10)");
-      console.log(5); // Add the Y Axis
+      })]);
+      svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("front-size", "14px").style("text-anchor", "start").attr("transform", "rotate(15 -10 10)"); // Add the Y Axis
 
       svg.append("g").call(d3.axisLeft(y));
-      var linePath = d3.line().x(function (d) {
-        return x(d.time_label);
-      }).y(function (d) {
-        return y(d.value);
-      });
-      svg.append('g').append('path').attr('class', 'line-path').attr('d', linePath(data)).attr('fill', 'none').attr('stroke-width', 1).attr('stroke', 'green').attr("transform", "translate(" + x.bandwidth() / 2 + "," + 0 + ")"); //画面积函数
+      stateNameList.forEach(function (state, index) {
+        var cloneState = _toConsumableArray(data);
 
-      var area = d3.area().x(function (d) {
-        return x(d.time_label);
-      }).y0(height).y1(function (d) {
-        return y(d.value);
+        cloneState = cloneState.filter(function (d) {
+          return d.State == state;
+        });
+        var linePath = d3.line().x(function (d) {
+          return x(d.time_label);
+        }).y(function (d) {
+          return y(d.value);
+        });
+        svg.append('g').append('path').attr('class', 'line-path').attr('d', linePath(cloneState)).attr('fill', 'none').attr('stroke-width', 1).attr('stroke', 'green').attr("transform", "translate(" + x.bandwidth() / 2 + "," + 0 + ")"); // //画面积函数
+        // var area = d3.area()
+        //   .x(function(d) { return x(d.time_label); })
+        //   .y0(height)
+        //   .y1(function(d) { return y(d.value); });
+        // svg.append("path")
+        //     .data([data])
+        //     .attr("class", "area")
+        //     .attr("d", area)
+        //     .attr("transform",
+        //     "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
       });
-      svg.append("path").data([data]).attr("class", "area").attr("d", area).attr("transform", "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
     });
   }
 })();
@@ -29155,7 +29167,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62735" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50621" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

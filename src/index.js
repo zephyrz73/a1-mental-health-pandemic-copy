@@ -35,76 +35,74 @@ const stateName = require('../static/state_name.csv')
 
 
     d3.csv(stateName).then(function(data){
-      console.log(data)
       data.forEach(function(d) {
         stateNameList.push(d.State);
       });
     })
 
-    // Get the data
+    /**
+     * Get The data
+     */
     d3.csv(mentalHealthData).then(function(data){
-      data = data.filter(function(d){
-        return d.State == state;
-      })
+
       data.forEach(function(d) {
           d.time_label = d["Time Period Label"];
           d.value = +d.Value;
           timeLabelGraph.push(d.time_label)
       });
-      console.log(3)
 
       // Scale the range of the data
       x.domain(timeLabelGraph);
       y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
-      // // Add the valueline path.
-      // svg.append("path")
-      //     .data([data])
-      //     .attr("class", "line")
-      //     .attr("d", valueline);
-      // console.log(4)
-      // Add the X Axis
       svg.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x))
-          .selectAll("text")
-          .style("front-size", "14px")
-          .style("text-anchor", "start")
-          .attr("transform", "rotate(15 -10 10)");
-      console.log(5)
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .style("front-size", "14px")
+      .style("text-anchor", "start")
+      .attr("transform", "rotate(15 -10 10)");
 
       // Add the Y Axis
       svg.append("g")
           .call(d3.axisLeft(y));
 
-      var linePath = d3.line()
-        .x(function(d){ return x(d.time_label) })
-        .y(function(d){ return y(d.value) });
+      stateNameList.forEach(function(state, index){
+          var cloneState = [...data];
+          cloneState = cloneState.filter(function(d){
+            return d.State == state;
+          });
 
-      svg.append('g')
-        .append('path')
-        .attr('class', 'line-path')
-        .attr('d', linePath(data))
-        .attr('fill', 'none')
-        .attr('stroke-width', 1)
-        .attr('stroke', 'green')
-        .attr("transform",
-          "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
+          var linePath = d3.line()
+            .x(function(d){ return x(d.time_label) })
+            .y(function(d){ return y(d.value) });
 
-      //画面积函数
-      var area = d3.area()
-        .x(function(d) { return x(d.time_label); })
-        .y0(height)
-        .y1(function(d) { return y(d.value); });
+          svg.append('g')
+            .append('path')
+            .attr('class', 'line-path')
+            .attr('d', linePath(cloneState))
+            .attr('fill', 'none')
+            .attr('stroke-width', 1)
+            .attr('stroke', 'green')
+            .attr("transform",
+              "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
 
-      svg.append("path")
-          .data([data])
-          .attr("class", "area")
-          .attr("d", area)
-          .attr("transform",
-          "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
+          // //画面积函数
+          // var area = d3.area()
+          //   .x(function(d) { return x(d.time_label); })
+          //   .y0(height)
+          //   .y1(function(d) { return y(d.value); });
 
-    });
+          // svg.append("path")
+          //     .data([data])
+          //     .attr("class", "area")
+          //     .attr("d", area)
+          //     .attr("transform",
+          //     "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
+
+        });
+
+      });
 
   }
 
