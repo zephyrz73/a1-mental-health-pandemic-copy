@@ -29123,6 +29123,7 @@ var stateName = require('../static/state_name.csv');
       svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("front-size", "14px").style("text-anchor", "start").attr("transform", "rotate(15 -10 10)"); // Add the Y Axis
 
       svg.append("g").call(d3.axisLeft(y));
+      var stateLineList = [];
       stateNameList.forEach(function (state, index) {
         var cloneState = _toConsumableArray(data);
 
@@ -29135,7 +29136,8 @@ var stateName = require('../static/state_name.csv');
           return y(d.value);
         });
         var color = generatenRandomColor();
-        svg.append('g').append('path').attr('class', 'line-path').attr('d', linePath(cloneState)).attr('fill', 'none').attr('stroke-width', 1).attr('stroke', color).attr("transform", "translate(" + x.bandwidth() / 2 + "," + 0 + ")"); // //画面积函数
+        var stateGraph = svg.append('g').append('path').attr('class', 'line-path').attr('d', linePath(cloneState)).attr('fill', 'none').attr('stroke-width', 1).attr('stroke', color).attr("transform", "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
+        stateLineList.push(stateGraph); // //画面积函数
         // var area = d3.area()
         //   .x(function(d) { return x(d.time_label); })
         //   .y0(height)
@@ -29146,6 +29148,18 @@ var stateName = require('../static/state_name.csv');
         //     .attr("d", area)
         //     .attr("transform",
         //     "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
+      });
+      console.log(stateLineList);
+      stateLineList.forEach(function (stateGraph, index) {
+        stateGraph.on('mouseover', function () {
+          d3.selectAll(".line-path").attr("opacity", 0.2);
+          d3.select(this).attr('opacity', 1);
+          d3.select(this).attr('stroke-width', 4);
+        });
+        stateGraph.on('mouseout', function () {
+          d3.select(this).attr('stroke-width', 1);
+          d3.selectAll(".line-path").attr("opacity", 1);
+        });
       });
     });
   }
@@ -29178,7 +29192,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56038" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56075" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -74,6 +74,8 @@ const stateName = require('../static/state_name.csv')
       svg.append("g")
           .call(d3.axisLeft(y));
 
+      var stateLineList = [];
+
       stateNameList.forEach(function(state, index) {
           var cloneState = [...data];
           cloneState = cloneState.filter(function(d){
@@ -85,7 +87,7 @@ const stateName = require('../static/state_name.csv')
             .y(function(d){ return y(d.value) });
 
           const color = generatenRandomColor();
-          svg.append('g')
+          const stateGraph = svg.append('g')
             .append('path')
             .attr('class', 'line-path')
             .attr('d', linePath(cloneState))
@@ -95,6 +97,7 @@ const stateName = require('../static/state_name.csv')
             .attr("transform",
               "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
 
+          stateLineList.push(stateGraph);
           // //画面积函数
           // var area = d3.area()
           //   .x(function(d) { return x(d.time_label); })
@@ -109,6 +112,18 @@ const stateName = require('../static/state_name.csv')
           //     "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
 
         });
+        console.log(stateLineList);
+        stateLineList.forEach(function(stateGraph, index){
+          stateGraph.on('mouseover', function() {
+            d3.selectAll(".line-path").attr("opacity", 0.2)
+            d3.select(this).attr('opacity', 1);
+            d3.select(this).attr('stroke-width', 4);
+          })
+          stateGraph.on('mouseout', function() {
+            d3.select(this).attr('stroke-width', 1);
+            d3.selectAll(".line-path").attr("opacity", 1)
+          })
+        })
 
       });
 
