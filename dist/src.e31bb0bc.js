@@ -29070,6 +29070,17 @@ var stateName = require('../static/state_name.csv');
     createStatesTimePhaseGraph("Arizona");
   }
 
+  function generatenRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+
+    return color;
+  }
+
   function createStatesTimePhaseGraph(state) {
     var timeLabelGraph = [];
     var stateNameList = [];
@@ -29080,8 +29091,7 @@ var stateName = require('../static/state_name.csv');
       left: 50
     },
         width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
-    console.log(1); // set the ranges
+        height = 500 - margin.top - margin.bottom; // set the ranges
 
     var x = d3.scaleBand().range([0, width]);
     var y = d3.scaleLinear().range([height, 0]); // append the svg obgect to the body of the page
@@ -29124,7 +29134,8 @@ var stateName = require('../static/state_name.csv');
         }).y(function (d) {
           return y(d.value);
         });
-        svg.append('g').append('path').attr('class', 'line-path').attr('d', linePath(cloneState)).attr('fill', 'none').attr('stroke-width', 1).attr('stroke', 'green').attr("transform", "translate(" + x.bandwidth() / 2 + "," + 0 + ")"); // //画面积函数
+        var color = generatenRandomColor();
+        svg.append('g').append('path').attr('class', 'line-path').attr('d', linePath(cloneState)).attr('fill', 'none').attr('stroke-width', 1).attr('stroke', color).attr("transform", "translate(" + x.bandwidth() / 2 + "," + 0 + ")"); // //画面积函数
         // var area = d3.area()
         //   .x(function(d) { return x(d.time_label); })
         //   .y0(height)
@@ -29167,7 +29178,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50621" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56038" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

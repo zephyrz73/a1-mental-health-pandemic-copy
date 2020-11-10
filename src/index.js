@@ -2,12 +2,20 @@ const d3 = require('d3');
 const mentalHealthData = require('../static/state_time_phase.csv')
 const stateName = require('../static/state_name.csv')
 "use strict";
-(
-  function () {
+(function () {
   window.addEventListener("load", init);
 
   function init() {
     createStatesTimePhaseGraph("Arizona");
+  }
+
+  function generatenRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
   function createStatesTimePhaseGraph(state) {
@@ -17,7 +25,6 @@ const stateName = require('../static/state_name.csv')
          width = 960 - margin.left - margin.right,
          height = 500 - margin.top - margin.bottom;
 
-    console.log(1)
     // set the ranges
     var x = d3.scaleBand().range([0, width])
     var y = d3.scaleLinear().range([height, 0]);
@@ -67,7 +74,7 @@ const stateName = require('../static/state_name.csv')
       svg.append("g")
           .call(d3.axisLeft(y));
 
-      stateNameList.forEach(function(state, index){
+      stateNameList.forEach(function(state, index) {
           var cloneState = [...data];
           cloneState = cloneState.filter(function(d){
             return d.State == state;
@@ -77,13 +84,14 @@ const stateName = require('../static/state_name.csv')
             .x(function(d){ return x(d.time_label) })
             .y(function(d){ return y(d.value) });
 
+          const color = generatenRandomColor();
           svg.append('g')
             .append('path')
             .attr('class', 'line-path')
             .attr('d', linePath(cloneState))
             .attr('fill', 'none')
             .attr('stroke-width', 1)
-            .attr('stroke', 'green')
+            .attr('stroke', color)
             .attr("transform",
               "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
 
@@ -106,6 +114,4 @@ const stateName = require('../static/state_name.csv')
 
   }
 
-}
-
-)();
+})();
