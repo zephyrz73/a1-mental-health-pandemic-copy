@@ -112,16 +112,23 @@ const stateName = require('../static/state_name.csv')
           //     "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
 
         });
+
+        var stateName = svg.append("div")
+          .attr("class", "state-name")
+          .style("opacity", 0);
         console.log(stateLineList);
         stateLineList.forEach(function(stateGraph, index){
           stateGraph.on('mouseover', function() {
             d3.selectAll(".line-path").attr("opacity", 0.2)
             d3.select(this).attr('opacity', 1);
             d3.select(this).attr('stroke-width', 4);
+            stateName.attr('text', stateNameList[index]);
+            stateName.style("opacity", 1);
           })
           stateGraph.on('mouseout', function() {
             d3.select(this).attr('stroke-width', 1);
-            d3.selectAll(".line-path").attr("opacity", 1)
+            d3.selectAll(".line-path").attr("opacity", 1);
+            stateName.style("opacity", 0)
           })
         })
 
