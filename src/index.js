@@ -5,8 +5,54 @@ const stateName = require('../static/state_name.csv')
 (function () {
   window.addEventListener("load", init);
 
+  var selectedStateIndex = -1;
+
   function init() {
     createStatesTimePhaseGraph("Arizona");
+    generateTable();
+  }
+
+  function generateTable() {
+    d3.csv(mentalHealthData).then(function(data){
+      data.forEach(function(d) {
+        d.state = d.State;
+        d.value = +d.Value;
+      });
+
+      var stateAvgValue = d3.nest()
+        .key(function(d) { return d.state; })
+        .rollup(function(v) { return d3.mean(v, function(d) { return d.value; }); })
+        .entries(data);
+      console.log(JSON.stringify(stateAvgValue));
+
+      var table = d3.select("#state_average_table").append("table");
+      var header = table.append("thead").append("tr");
+      header
+              .selectAll("th")
+              .data(["State, Percentage of Population with Depression"])
+              .enter()
+              .append("th")
+              .text(function(d) { return d; });
+      var tablebody = table.append("tbody");
+      var rows = tablebody
+          .selectAll("tr")
+          .data(stateAvgValue)
+          .enter()
+          .append("tr");
+      var cells = rows.selectAll("td")
+          .data(function(row) {
+              var kVList = ["key","value"];
+              // he does it this way to guarantee you only use the
+              // values for the columns you provide.
+              return kVList.map(function(column) {
+                  // return a new object with a value set to the row's column value.
+                  return {value: row[column]};
+              });
+          })
+          .enter()
+          .append("td")
+          .text(function(d) { return d.value; });
+    });
   }
 
   function generatenRandomColor() {
@@ -147,11 +193,18 @@ const stateName = require('../static/state_name.csv')
               .attr('opacity', 1)
               .text(stateNameList[index])
               .style('fill', colorList[index]);
+            selectedStateIndex = index;
+            if (!(selectedStateIndex === -1)) {
+              console.log(qs("table tbody:nth-child("+selectedStateIndex+")"));
+              console.log("table tbody:nth-child("+selectedStateIndex+")");
+              d3.select("tbody:nth-child("+selectedStateIndex+")").attr("color", "purple");
+            }
           })
           stateGraph.on('mouseout', function() {
             d3.select(this).attr('stroke-width', 1);
             d3.selectAll(".line-path").attr("opacity", 1);
             d3.select("#state_name").attr('opacity', 0);
+            selectedStateIndex = -1;
           })
         })
 
