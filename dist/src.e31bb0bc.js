@@ -29043,6 +29043,16 @@ module.exports = "/state_time_phase.f9479509.csv";
 },{}],"../static/state_name.csv":[function(require,module,exports) {
 module.exports = "/state_name.06503881.csv";
 },{}],"index.js":[function(require,module,exports) {
+"use strict";
+
+var _d = require("d3");
+
+var _state_time_phase = _interopRequireDefault(require("../static/state_time_phase.csv"));
+
+var _state_name = _interopRequireDefault(require("../static/state_name.csv"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -29054,12 +29064,6 @@ function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.it
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-var d3 = require('d3');
-
-var mentalHealthData = require('../static/state_time_phase.csv');
-
-var stateName = require('../static/state_name.csv');
 
 "use strict";
 
@@ -29073,27 +29077,20 @@ var stateName = require('../static/state_name.csv');
   }
 
   function generateTable() {
-    d3.csv(mentalHealthData).then(function (data) {
+    (0, _d.csv)(_state_time_phase.default).then(function (data) {
       data.forEach(function (d) {
         d.state = d.State;
         d.value = +d.Value;
       });
-      var stateAvgValue = d3.nest().key(function (d) {
+      var stateAvgValue = (0, _d.nest)().key(function (d) {
         return d.state;
       }).rollup(function (v) {
-        return Math.round(d3.mean(v, function (d) {
+        return Math.round((0, _d.mean)(v, function (d) {
           return d.value;
         }) * 100) / 100;
       }).entries(data);
       console.log(JSON.stringify(stateAvgValue));
-      var table = d3.select("#state_average_table").append("table"); // var header = table.append("thead").append("tr");
-      // header
-      //         .selectAll("th")
-      //         .data(["State", "Average Depression Rate"])
-      //         .enter()
-      //         .append("th")
-      //         .text(function(d) { return d; });
-
+      var table = (0, _d.select)("#state_average_table").append("table");
       var tablebody = table.append("tbody");
       var rows = tablebody.selectAll("tr").data(stateAvgValue).enter().append("tr");
       var cells = rows.selectAll("td").data(function (row) {
@@ -29135,15 +29132,15 @@ var stateName = require('../static/state_name.csv');
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom; // set the ranges
 
-    var x = d3.scaleBand().range([0, width]);
-    var y = d3.scaleLinear().range([height, 0]); // append the svg obgect to the body of the page
+    var x = (0, _d.scaleBand)().range([0, width]);
+    var y = (0, _d.scaleLinear)().range([height, 0]); // append the svg obgect to the body of the page
     // appends a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
 
-    var svg = d3.select("#state_time_phase_svg").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg = (0, _d.select)("#state_time_phase_svg").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     console.log(2);
-    svg.append("text").attr("x", width / 2).attr("y", 0 - margin.top / 2).attr("text-anchor", "middle").style("font-size", "16px").style("text-decoration", "underline").text("Percentage of Population with Depression Vs. Time Period");
-    d3.csv(stateName).then(function (data) {
+    svg.append("text").attr("x", width / 2).attr("y", 0 - margin.top / 2).attr("text-anchor", "middle").style("font-size", "16px").style("text-decoration", "underline").text("Percentage Of Population With Symptoms of Depressive Disorder During Covid-19 Phase 1 (4/23/2020-7/21/2020)");
+    (0, _d.csv)(_state_name.default).then(function (data) {
       data.forEach(function (d) {
         stateNameList.push(d.State);
       });
@@ -29152,7 +29149,7 @@ var stateName = require('../static/state_name.csv');
      * Get The data
      */
 
-    d3.csv(mentalHealthData).then(function (data) {
+    (0, _d.csv)(_state_time_phase.default).then(function (data) {
       data.forEach(function (d) {
         d.time_label = d["Time Period Label"];
         d.value = +d.Value;
@@ -29160,15 +29157,15 @@ var stateName = require('../static/state_name.csv');
       }); // Scale the range of the data
 
       x.domain(timeLabelGraph);
-      y.domain([0, d3.max(data, function (d) {
+      y.domain([0, (0, _d.max)(data, function (d) {
         return d.value;
       })]);
-      svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("front-size", "14px").style("text-anchor", "start").attr("transform", "rotate(5 -10 10)");
+      svg.append("g").attr("transform", "translate(0," + height + ")").call((0, _d.axisBottom)(x)).selectAll("text").style("front-size", "14px").style("text-anchor", "start").attr("transform", "rotate(5 -10 10)");
       svg.append("text").attr("transform", "translate(" + width / 2 + " ," + (height + margin.top + 20) + ")").style("text-anchor", "middle").text("Time Period"); // Add the Y Axis
 
-      svg.append("g").call(d3.axisLeft(y));
+      svg.append("g").call((0, _d.axisLeft)(y));
       var stateLineList = [];
-      svg.append("text").attr("transform", "rotate(-90)").attr("y", 0 - margin.left).attr("x", 0 - height / 2).attr("dy", "1em").style("text-anchor", "middle").text("Value");
+      svg.append("text").attr("transform", "rotate(-90)").attr("y", 0 - margin.left).attr("x", 0 - height / 2).attr("dy", "1em").style("text-anchor", "middle").text("Percentage Of Population Showing Depressive Disorder");
       var colorList = [];
       stateNameList.forEach(function (state, index) {
         var cloneState = _toConsumableArray(data);
@@ -29176,7 +29173,7 @@ var stateName = require('../static/state_name.csv');
         cloneState = cloneState.filter(function (d) {
           return d.State == state;
         });
-        var linePath = d3.line().x(function (d) {
+        var linePath = (0, _d.line)().x(function (d) {
           return x(d.time_label);
         }).y(function (d) {
           return y(d.value);
@@ -29184,32 +29181,22 @@ var stateName = require('../static/state_name.csv');
         var color = generatenRandomColor();
         colorList.push(color);
         var stateGraph = svg.append('g').append('path').attr('class', 'line-path').attr('d', linePath(cloneState)).attr('fill', 'none').attr('stroke-width', 1).attr('stroke', color).attr("transform", "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
-        stateLineList.push(stateGraph); // //画面积函数
-        // var area = d3.area()
-        //   .x(function(d) { return x(d.time_label); })
-        //   .y0(height)
-        //   .y1(function(d) { return y(d.value); });
-        // svg.append("path")
-        //     .data([data])
-        //     .attr("class", "area")
-        //     .attr("d", area)
-        //     .attr("transform",
-        //     "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
+        stateLineList.push(stateGraph);
       });
       stateLineList.forEach(function (stateGraph, index) {
         stateGraph.on('mouseover', function () {
-          d3.selectAll(".line-path").attr("opacity", 0.2);
-          d3.select(this).attr('opacity', 1);
-          d3.select(this).attr('stroke-width', 4);
-          d3.select("#state_name").attr('opacity', 1).text(stateNameList[index]);
+          (0, _d.selectAll)(".line-path").attr("opacity", 0.2);
+          (0, _d.select)(this).attr('opacity', 1);
+          (0, _d.select)(this).attr('stroke-width', 4);
+          (0, _d.select)("#state_name").attr('opacity', 1).text(stateNameList[index]);
           qs("#graph_area #state_selected").style["border-color"] = colorList[index];
           qs("#state_average_table tbody").childNodes[index].style.backgroundColor = "purple";
           qs("#state_average_table tbody").childNodes[index].style.color = "white";
         });
         stateGraph.on('mouseout', function () {
-          d3.select(this).attr('stroke-width', 1);
-          d3.selectAll(".line-path").attr("opacity", 1);
-          d3.select("#state_name").attr('opacity', 0);
+          (0, _d.select)(this).attr('stroke-width', 1);
+          (0, _d.selectAll)(".line-path").attr("opacity", 1);
+          (0, _d.select)("#state_name").attr('opacity', 0);
           qs("#state_average_table tbody").childNodes[index].style.backgroundColor = "";
           qs("#state_average_table tbody").childNodes[index].style.color = "black";
           selectedStateIndex = -1;
@@ -29286,7 +29273,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62619" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52651" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
