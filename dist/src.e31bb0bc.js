@@ -29085,9 +29085,9 @@ var stateName = require('../static/state_name.csv');
     var timeLabelGraph = [];
     var stateNameList = [];
     var margin = {
-      top: 20,
-      right: 20,
-      bottom: 50,
+      top: 50,
+      right: 35,
+      bottom: 70,
       left: 50
     },
         width = 960 - margin.left - margin.right,
@@ -29098,8 +29098,9 @@ var stateName = require('../static/state_name.csv');
     // appends a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
 
-    var svg = d3.select("body").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3.select("#state_time_phase_svg").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     console.log(2);
+    svg.append("text").attr("x", width / 2).attr("y", 0 - margin.top / 2).attr("text-anchor", "middle").style("font-size", "16px").style("text-decoration", "underline").text("Percentage of Population with Depression Vs. Time Period");
     d3.csv(stateName).then(function (data) {
       data.forEach(function (d) {
         stateNameList.push(d.State);
@@ -29120,10 +29121,13 @@ var stateName = require('../static/state_name.csv');
       y.domain([0, d3.max(data, function (d) {
         return d.value;
       })]);
-      svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("front-size", "14px").style("text-anchor", "start").attr("transform", "rotate(15 -10 10)"); // Add the Y Axis
+      svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x)).selectAll("text").style("front-size", "14px").style("text-anchor", "start").attr("transform", "rotate(5 -10 10)");
+      svg.append("text").attr("transform", "translate(" + width / 2 + " ," + (height + margin.top + 20) + ")").style("text-anchor", "middle").text("Time Period"); // Add the Y Axis
 
       svg.append("g").call(d3.axisLeft(y));
       var stateLineList = [];
+      svg.append("text").attr("transform", "rotate(-90)").attr("y", 0 - margin.left).attr("x", 0 - height / 2).attr("dy", "1em").style("text-anchor", "middle").text("Value");
+      var colorList = [];
       stateNameList.forEach(function (state, index) {
         var cloneState = _toConsumableArray(data);
 
@@ -29136,6 +29140,7 @@ var stateName = require('../static/state_name.csv');
           return y(d.value);
         });
         var color = generatenRandomColor();
+        colorList.push(color);
         var stateGraph = svg.append('g').append('path').attr('class', 'line-path').attr('d', linePath(cloneState)).attr('fill', 'none').attr('stroke-width', 1).attr('stroke', color).attr("transform", "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
         stateLineList.push(stateGraph); // //画面积函数
         // var area = d3.area()
@@ -29149,23 +29154,60 @@ var stateName = require('../static/state_name.csv');
         //     .attr("transform",
         //     "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
       });
-      var stateName = svg.append("div").attr("class", "state-name").style("opacity", 0);
-      console.log(stateLineList);
       stateLineList.forEach(function (stateGraph, index) {
         stateGraph.on('mouseover', function () {
           d3.selectAll(".line-path").attr("opacity", 0.2);
           d3.select(this).attr('opacity', 1);
           d3.select(this).attr('stroke-width', 4);
-          stateName.attr('text', stateNameList[index]);
-          stateName.style("opacity", 1);
+          d3.select("#state_name").attr('opacity', 1).text(stateNameList[index]).style('fill', colorList[index]);
         });
         stateGraph.on('mouseout', function () {
           d3.select(this).attr('stroke-width', 1);
           d3.selectAll(".line-path").attr("opacity", 1);
-          stateName.style("opacity", 0);
+          d3.select("#state_name").attr('opacity', 0);
         });
       });
     });
+  }
+  /**
+  * Returns the element that has the ID attribute with the specified value.
+  * @param {string} idName - element ID
+  * @returns {object} DOM object associated with id.
+  */
+
+
+  function id(idName) {
+    return document.getElementById(idName);
+  }
+  /**
+  * Returns the first element that matches the given CSS selector.
+  * @param {string} selector - CSS query selector.
+  * @returns {object} The first DOM object matching the query.
+  */
+
+
+  function qs(selector) {
+    return document.querySelector(selector);
+  }
+  /**
+  * Returns the array of elements that match the given CSS selector.
+  * @param {string} selector - CSS query selector
+  * @returns {object[]} array of DOM objects matching the query.
+  */
+
+
+  function qsa(selector) {
+    return document.querySelectorAll(selector);
+  }
+  /**
+  * Returns a new element with the given tag name.
+  * @param {string} tagName - HTML tag name for new DOM element.
+  * @returns {object} New DOM object for given HTML tag.
+  */
+
+
+  function gen(tagName) {
+    return document.createElement(tagName);
   }
 })();
 },{"d3":"../node_modules/d3/index.js","../static/state_time_phase.csv":"../static/state_time_phase.csv","../static/state_name.csv":"../static/state_name.csv"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -29196,7 +29238,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60355" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60393" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
