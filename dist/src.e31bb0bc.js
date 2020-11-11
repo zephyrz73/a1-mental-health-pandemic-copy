@@ -29203,17 +29203,15 @@ var stateName = require('../static/state_name.csv');
           d3.select(this).attr('stroke-width', 4);
           d3.select("#state_name").attr('opacity', 1).text(stateNameList[index]);
           qs("#graph_area #state_selected").style["border-color"] = colorList[index];
-
-          if (!(selectedStateIndex === -1)) {
-            console.log(qs("table tbody:nth-child(" + selectedStateIndex + ")"));
-            console.log("table tbody:nth-child(" + selectedStateIndex + ")");
-            d3.select("tbody:nth-child(" + selectedStateIndex + ")").attr("color", "purple");
-          }
+          qs("#state_average_table tbody").childNodes[index].style.backgroundColor = "purple";
+          qs("#state_average_table tbody").childNodes[index].style.color = "white";
         });
         stateGraph.on('mouseout', function () {
           d3.select(this).attr('stroke-width', 1);
           d3.selectAll(".line-path").attr("opacity", 1);
           d3.select("#state_name").attr('opacity', 0);
+          qs("#state_average_table tbody").childNodes[index].style.backgroundColor = "";
+          qs("#state_average_table tbody").childNodes[index].style.color = "black";
           selectedStateIndex = -1;
         });
       });
@@ -29288,7 +29286,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64036" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62619" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
