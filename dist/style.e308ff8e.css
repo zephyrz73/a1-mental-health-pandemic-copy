@@ -52,4 +52,25 @@ p { margin: 0 0 10px 0; }
   fill: green;
 }
 
+#graph_area #state_selected {
+  border-style: solid;
+  border-color: #492a7c;
+  border-width: 2px;
+  width: 20vh;
+  text-align: center;
+}
+
+#graph_area #state_average_table table {
+  display: flex;
+  flex-direction: column;
+}
+
+#graph_area #state_average_table table tbody{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 25vh;
+}
+
+
 /*# sourceMappingURL=/style.e308ff8e.css.map */

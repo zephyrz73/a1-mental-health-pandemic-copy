@@ -29081,16 +29081,19 @@ var stateName = require('../static/state_name.csv');
       var stateAvgValue = d3.nest().key(function (d) {
         return d.state;
       }).rollup(function (v) {
-        return d3.mean(v, function (d) {
+        return Math.round(d3.mean(v, function (d) {
           return d.value;
-        });
+        }) * 100) / 100;
       }).entries(data);
       console.log(JSON.stringify(stateAvgValue));
-      var table = d3.select("#state_average_table").append("table");
-      var header = table.append("thead").append("tr");
-      header.selectAll("th").data(["State, Percentage of Population with Depression"]).enter().append("th").text(function (d) {
-        return d;
-      });
+      var table = d3.select("#state_average_table").append("table"); // var header = table.append("thead").append("tr");
+      // header
+      //         .selectAll("th")
+      //         .data(["State", "Average Depression Rate"])
+      //         .enter()
+      //         .append("th")
+      //         .text(function(d) { return d; });
+
       var tablebody = table.append("tbody");
       var rows = tablebody.selectAll("tr").data(stateAvgValue).enter().append("tr");
       var cells = rows.selectAll("td").data(function (row) {
@@ -29198,8 +29201,8 @@ var stateName = require('../static/state_name.csv');
           d3.selectAll(".line-path").attr("opacity", 0.2);
           d3.select(this).attr('opacity', 1);
           d3.select(this).attr('stroke-width', 4);
-          d3.select("#state_name").attr('opacity', 1).text(stateNameList[index]).style('fill', colorList[index]);
-          selectedStateIndex = index;
+          d3.select("#state_name").attr('opacity', 1).text(stateNameList[index]);
+          qs("#graph_area #state_selected").style["border-color"] = colorList[index];
 
           if (!(selectedStateIndex === -1)) {
             console.log(qs("table tbody:nth-child(" + selectedStateIndex + ")"));
@@ -29285,7 +29288,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63549" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64036" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

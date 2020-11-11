@@ -21,18 +21,18 @@ const stateName = require('../static/state_name.csv')
 
       var stateAvgValue = d3.nest()
         .key(function(d) { return d.state; })
-        .rollup(function(v) { return d3.mean(v, function(d) { return d.value; }); })
+        .rollup(function(v) { return Math.round(d3.mean(v, function(d) { return d.value; }) * 100) / 100; })
         .entries(data);
       console.log(JSON.stringify(stateAvgValue));
 
       var table = d3.select("#state_average_table").append("table");
-      var header = table.append("thead").append("tr");
-      header
-              .selectAll("th")
-              .data(["State, Percentage of Population with Depression"])
-              .enter()
-              .append("th")
-              .text(function(d) { return d; });
+      // var header = table.append("thead").append("tr");
+      // header
+      //         .selectAll("th")
+      //         .data(["State", "Average Depression Rate"])
+      //         .enter()
+      //         .append("th")
+      //         .text(function(d) { return d; });
       var tablebody = table.append("tbody");
       var rows = tablebody
           .selectAll("tr")
@@ -182,8 +182,6 @@ const stateName = require('../static/state_name.csv')
           //     "translate(" + x.bandwidth() / 2 + "," + 0 + ")");
 
         });
-
-
         stateLineList.forEach(function(stateGraph, index){
           stateGraph.on('mouseover', function() {
             d3.selectAll(".line-path").attr("opacity", 0.2)
@@ -191,9 +189,8 @@ const stateName = require('../static/state_name.csv')
             d3.select(this).attr('stroke-width', 4);
             d3.select("#state_name")
               .attr('opacity', 1)
-              .text(stateNameList[index])
-              .style('fill', colorList[index]);
-            selectedStateIndex = index;
+              .text(stateNameList[index]);
+            qs("#graph_area #state_selected").style["border-color"] = colorList[index];
             if (!(selectedStateIndex === -1)) {
               console.log(qs("table tbody:nth-child("+selectedStateIndex+")"));
               console.log("table tbody:nth-child("+selectedStateIndex+")");
